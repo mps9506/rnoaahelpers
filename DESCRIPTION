@@ -1,0 +1,21 @@
+Package: rnoaahelpers
+Type: Package
+Title: Help Me Use rnoaa
+Version: 0.1.0
+Author: Michael Schramm
+Maintainer: Michael Schramm <michael.schramm@ag.tamu.edu>
+Description: rnoaa is awesome.
+    This package has extends rnoaa with additonal functions to facilitate downloadings and summarizing NCDC data.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+URL: https://github.com/mps9506/rnoaahelpers
+BugReports: https://github.com/mps9506/rnoaahelpers/issues
+RoxygenNote: 6.1.1
+Imports: dplyr,
+    lubridate,
+    progress,
+    purrr,
+    rlang,
+    rnoaa,
+    tidyr
