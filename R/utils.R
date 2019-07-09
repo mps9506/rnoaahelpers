@@ -5,6 +5,8 @@
 #' @param end_date Date
 #' @import dplyr
 #' @return tibble
+#' @export
+#' @keywords internal
 
 create_dates <- function(start_date, end_date) {
   start_year <- lubridate::year(start_date)
@@ -38,6 +40,7 @@ create_dates <- function(start_date, end_date) {
 #' @param progress logical
 #' @import dplyr
 #' @importFrom rlang .data
+#' @importFrom progress progress_bar
 #'
 #' @return tibble
 #' @export
@@ -53,17 +56,19 @@ download_ncdc <- function(start_date, end_date, station_id, data_type_id, token,
                                                   format = "  downloading [:bar] :percent eta: :eta")
 
   df <- df %>%
-    mutate(data = purrr::map2(.data$start_dates, .data$end_dates,
-                              ~{get_data(as.character(.x), as.character(.y),
-                                        station_id = station_id,
-                                        data_type_id = data_type_id,
-                                        token = token,
-                                        add_units = TRUE)
-                                if (progress) pb$tick()
-                                }
-                              )) %>%
-    select(.data$data) %>%
-    tidyr::unnest(.data$data)
+    mutate(data = purrr::map2(.data$start_dates, .data$end_dates, ~{
+      x <- get_data(as.character(.x), as.character(.y),
+                    station_id = station_id,
+                    data_type_id = data_type_id,
+                    token = token,
+                    add_units = TRUE)
+
+      if (progress) pb$tick()
+
+      return(x)
+      })) %>%
+    dplyr::select(.data$data) %>%
+    tidyr::unnest()
 
   return(df)
 }
@@ -80,6 +85,7 @@ download_ncdc <- function(start_date, end_date, station_id, data_type_id, token,
 #' @importFrom rnoaa ncdc
 #' @return dataframe
 #' @export
+#' @keywords internal
 
 get_data <- function(start_date, end_date, data_type_id, station_id, token, add_units = TRUE) {
 
