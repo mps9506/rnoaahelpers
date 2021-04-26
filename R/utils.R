@@ -68,7 +68,7 @@ download_ncdc <- function(start_date, end_date, station_id, data_type_id, token,
       return(x)
       })) %>%
     dplyr::select(.data$data) %>%
-    tidyr::unnest()
+    tidyr::unnest(cols = .data$data)
 
   return(df)
 }
